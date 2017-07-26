@@ -30,6 +30,11 @@ def commands(command):
             pause()
         elif songMode == "pause":
             play()
+    elif command == "currentPlaylist":
+        currentplaylist()
+    elif command == "status":
+        status()
+    console("--")
 
 
 def menu():
@@ -45,13 +50,11 @@ def menu():
 def playlistnext():
     global currentPlaylist
     currentPlaylist += 1
-    print "playlistnext"
 
 
 def playlistprevious():
     global currentPlaylist
     currentPlaylist -= 1
-    print "playlistprevious"
 
 
 def currentplaylist():
@@ -59,54 +62,58 @@ def currentplaylist():
     p2 = subprocess.Popen(["sed", "-n", str(currentPlaylist + 1) + "p"], stdin=p1.stdout, stdout=subprocess.PIPE)
     p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
     output, err = p2.communicate()
-    print output.strip()
+    console(output.strip())
 
 
 def songnext():
-    print "songnext"
+    runmpccommand("next")
 
 
 def songprevious():
-    print "songprevious"
+    runmpccommand("prev")
 
 
 def play():
     global songMode
     songMode = "play"
-    print "play"
+    runmpccommand("play")
 
 
 def pause():
     global songMode
     songMode = "pause"
-    print "pause"
+    runmpccommand("pause")
 
 
 def volumeincrease():
-    print "volume +"
+    runmpccommand("volume +10")
 
 
 def volumedecrease():
-    print "volume -"
+    runmpccommand("volume -10")
 
 
 def status():
-    subprocess.call("mpc status", shell=True)
+    runmpccommand("status")
+
+
+def runmpccommand(command):
+    subprocess.call("mpc " + command, shell=True)
 
 
 def console(msg):
     subprocess.call("echo " + msg, shell=True)
 
 
-currentplaylist()
+commands("currentplaylist")
 commands("playpause")
 commands("menu")
 commands("next")
-currentplaylist()
+commands("currentplaylist")
 commands("previous")
-currentplaylist()
+commands("currentplaylist")
 commands("menu")
 commands("next")
 commands("previous")
 commands("playpause")
-status()
+commands("status")
