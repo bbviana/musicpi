@@ -16,15 +16,9 @@ def commands(command):
     elif command == "volumedecrease":
         volumedecrease()
     elif command == "previous":
-        if menuMode == "playlist":
-            playlistprevious()
-        elif menuMode == "song":
-            songprevious()
+        previous()
     elif command == "next":
-        if menuMode == "playlist":
-            playlistnext()
-        elif menuMode == "song":
-            songnext()
+       next_()
     elif command == "playpause":
         if songMode == "play":
             pause()
@@ -47,6 +41,20 @@ def menu():
     console('menu: ' + menuMode)
 
 
+def previous():
+    if menuMode == "playlist":
+        playlistprevious()
+    elif menuMode == "song":
+        songprevious()
+
+
+def next_():
+    if menuMode == "playlist":
+        playlistnext()
+    elif menuMode == "song":
+        songnext()
+
+
 def playlistnext():
     global currentPlaylist
     currentPlaylist += 1
@@ -55,14 +63,6 @@ def playlistnext():
 def playlistprevious():
     global currentPlaylist
     currentPlaylist -= 1
-
-
-def currentplaylist():
-    p1 = subprocess.Popen(["mpc", "lsplaylists"], stdout=subprocess.PIPE)
-    p2 = subprocess.Popen(["sed", "-n", str(currentPlaylist + 1) + "p"], stdin=p1.stdout, stdout=subprocess.PIPE)
-    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
-    output, err = p2.communicate()
-    console(output.strip())
 
 
 def songnext():
@@ -91,6 +91,14 @@ def volumeincrease():
 
 def volumedecrease():
     runmpccommand("volume -10")
+
+
+def currentplaylist():
+    p1 = subprocess.Popen(["mpc", "lsplaylists"], stdout=subprocess.PIPE)
+    p2 = subprocess.Popen(["sed", "-n", str(currentPlaylist + 1) + "p"], stdin=p1.stdout, stdout=subprocess.PIPE)
+    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    output, err = p2.communicate()
+    console(output.strip())
 
 
 def status():
