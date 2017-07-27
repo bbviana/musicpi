@@ -7,10 +7,10 @@ import commands
 
 # pin 16, GPIO23
 BUTTON_MODE = 23
+BUTTON_CONFIRM = 23
 BUTTON_NEXT = 23
 BUTTON_PREV = 23
-BUTTON_VOL_UP = 23
-BUTTON_VOL_DOWN = 23
+
 
 
 def action_press_button_loop(gpio_pin):
@@ -28,17 +28,15 @@ gpio.setmode(gpio.BCM)
 
 # Configurando como INPUT e modo pull-down interno
 gpio.setup(BUTTON_MODE, gpio.IN, pull_up_down=gpio.PUD_DOWN)
+gpio.setup(BUTTON_CONFIRM, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 gpio.setup(BUTTON_NEXT, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 gpio.setup(BUTTON_PREV, gpio.IN, pull_up_down=gpio.PUD_DOWN)
-gpio.setup(BUTTON_VOL_UP, gpio.IN, pull_up_down=gpio.PUD_DOWN)
-gpio.setup(BUTTON_VOL_DOWN, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 
 # Adicionando um evento na mudança RISING 0V[LOW] - > 3.3V[HIGH]
 gpio.add_event_detect(BUTTON_MODE, gpio.RISING, callback=commands.menu)
-gpio.add_event_detect(BUTTON_NEXT, gpio.RISING, callback=action_press_button)
-gpio.add_event_detect(BUTTON_PREV, gpio.RISING, callback=action_press_button)
-gpio.add_event_detect(BUTTON_VOL_UP, gpio.RISING, callback=action_press_button)
-gpio.add_event_detect(BUTTON_VOL_DOWN, gpio.RISING, callback=action_press_button)
+gpio.add_event_detect(BUTTON_CONFIRM, gpio.RISING, callback=commands.volumeincrease)
+gpio.add_event_detect(BUTTON_NEXT, gpio.RISING, callback=commands.next_)
+gpio.add_event_detect(BUTTON_PREV, gpio.RISING, callback=commands.previous)
 
 # Junto com o parametro callback podemos utilizar ainda o bouncetime
 # na linha abaixo estamos dizendo para ignorar nos primeiro 300ms

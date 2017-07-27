@@ -1,39 +1,19 @@
 #!/usr/bin/env python
 
 import subprocess
+import display
 
-menuMode = "song"  # song | playlist
+menuMode = "song"  # song | playlist | volume
 songMode = "pause"  # play | pause
 currentPlaylist = 0
 
 
-def commands(command):
-    global menuMode
-    if command == "menu":
-        menu()
-    elif command == "volumeincrease":
-        volumeincrease()
-    elif command == "volumedecrease":
-        volumedecrease()
-    elif command == "previous":
-        previous()
-    elif command == "next":
-       next_()
-    elif command == "playpause":
-        if songMode == "play":
-            pause()
-        elif songMode == "pause":
-            play()
-    elif command == "currentPlaylist":
-        currentplaylist()
-    elif command == "status":
-        status()
-    console("--")
-
-
+# song > volume > playlist > song ...
 def menu():
     global menuMode
     if menuMode == "song":
+        menuMode = "volume"
+    elif menuMode == "volume":
         menuMode = "playlist"
     elif menuMode == "playlist":
         menuMode = "song"
@@ -41,11 +21,22 @@ def menu():
     console('menu: ' + menuMode)
 
 
+def confirm():
+    global menuMode
+    if menuMode == "playlist":
+        play()
+        menuMode = "song"
+    else:
+        playpause()
+
+
 def previous():
     if menuMode == "playlist":
         playlistprevious()
     elif menuMode == "song":
         songprevious()
+    elif menuMode == "volume":
+        volumedecrease()
 
 
 def next_():
@@ -53,6 +44,8 @@ def next_():
         playlistnext()
     elif menuMode == "song":
         songnext()
+    elif menuMode == "volume":
+        volumeincrease()
 
 
 def playlistnext():
@@ -71,6 +64,13 @@ def songnext():
 
 def songprevious():
     runmpccommand("prev")
+
+
+def playpause():
+    if songMode == "play":
+        pause()
+    elif songMode == "pause":
+        play()
 
 
 def play():
@@ -113,15 +113,3 @@ def console(msg):
     subprocess.call("echo " + msg, shell=True)
 
 
-commands("currentplaylist")
-commands("playpause")
-commands("menu")
-commands("next")
-commands("currentplaylist")
-commands("previous")
-commands("currentplaylist")
-commands("menu")
-commands("next")
-commands("previous")
-commands("playpause")
-commands("status")
