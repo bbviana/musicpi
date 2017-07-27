@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#! /usr/bin/python
+# coding=utf-8
 
 import subprocess
 import display
@@ -18,14 +19,14 @@ def menu():
     elif menuMode == "playlist":
         menuMode = "song"
 
-    console('menu: ' + menuMode)
+    display.printmessage('menu: ' + menuMode)
 
 
 def confirm():
     global menuMode
     if menuMode == "playlist":
-        play()
         menuMode = "song"
+        play()
     else:
         playpause()
 

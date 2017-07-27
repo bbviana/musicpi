@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import RPi.GPIO as gpio
-import time
+# import time
 import commands
 
 # pin 16, GPIO23
@@ -12,14 +12,13 @@ BUTTON_NEXT = 23
 BUTTON_PREV = 23
 
 
-
-def action_press_button_loop(gpio_pin):
-    print "O botão no pino %d foi pressionado!" % gpio_pin
-    print "Saindo..."
-
-
-def action_press_button(gpio_pin):
-    print "Tratando o botão no pino %d que foi pressionado!" % gpio_pin
+# def action_press_button_loop(gpio_pin):
+#     print "O botão no pino %d foi pressionado!" % gpio_pin
+#     print "Saindo..."
+#
+#
+# def action_press_button(gpio_pin):
+#     print "Tratando o botão no pino %d que foi pressionado!" % gpio_pin
 
 
 """ Configurando GPIO """
@@ -34,7 +33,7 @@ gpio.setup(BUTTON_PREV, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 
 # Adicionando um evento na mudança RISING 0V[LOW] - > 3.3V[HIGH]
 gpio.add_event_detect(BUTTON_MODE, gpio.RISING, callback=commands.menu)
-gpio.add_event_detect(BUTTON_CONFIRM, gpio.RISING, callback=commands.volumeincrease)
+gpio.add_event_detect(BUTTON_CONFIRM, gpio.RISING, callback=commands.confirm)
 gpio.add_event_detect(BUTTON_NEXT, gpio.RISING, callback=commands.next_)
 gpio.add_event_detect(BUTTON_PREV, gpio.RISING, callback=commands.previous)
 
