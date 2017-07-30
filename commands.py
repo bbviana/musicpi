@@ -19,8 +19,9 @@ def menu():
     elif menuMode == "playlist":
         menuMode = "song"
 
-    display.printmessage('menu: ' + menuMode)
+    display.print_on_display('Menu', menuMode)
 
+# PAREI
 
 def confirm():
     global menuMode
