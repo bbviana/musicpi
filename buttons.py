@@ -1,17 +1,24 @@
 #! /usr/bin/python
 # coding=utf-8
 
-import RPi.GPIO as gpio
+import RPi.GPIO as GPIO
+import commands
 
 BUTTON_MODE = 26
 BUTTON_CONFIRM = 19
 BUTTON_NEXT = 13
 BUTTON_PREV = 6
 
-def setup_buttons():
-    gpio.setmode(gpio.BCM)
 
-    gpio.setup(BUTTON_MODE, gpio.IN, pull_up_down=gpio.PUD_UP)
-    gpio.setup(BUTTON_CONFIRM, gpio.IN, pull_up_down=gpio.PUD_UP)
-    gpio.setup(BUTTON_NEXT, gpio.IN, pull_up_down=gpio.PUD_UP)
-    gpio.setup(BUTTON_PREV, gpio.IN, pull_up_down=gpio.PUD_UP)
+def setup_buttons():
+    GPIO.setmode(GPIO.BCM)
+
+    GPIO.setup(BUTTON_MODE, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(BUTTON_CONFIRM, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(BUTTON_NEXT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(BUTTON_PREV, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    GPIO.add_event_detect(BUTTON_MODE, GPIO.FALLING, callback=commands.menu)
+    GPIO.add_event_detect(BUTTON_CONFIRM, GPIO.FALLING, callback=commands.confirm)
+    GPIO.add_event_detect(BUTTON_NEXT, GPIO.FALLING, callback=commands.next_)
+    GPIO.add_event_detect(BUTTON_PREV, GPIO.FALLING, callback=commands.previous)
