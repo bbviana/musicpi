@@ -7,24 +7,15 @@ from Song import *
 
 
 class Player:
-
     def __init__(self):
         self.menuMode = "song"  # song | playlist | volume
         self.songMode = "pause"  # play | pause
-        self.currentPlaylist = 0
-        self.currentSong = None
+        self.current_playlist = 0
+        self.current_song = Song()
 
     def start(self):
-        # PAREI
-        return ""
-
-    @property
-    def currentsong(self):
-        return self.currentSong
-
-    @currentsong.setter
-    def currentsong(self, value):
-        self.currentSong = Song(value)
+        # guardar ultima em um arquivo
+        self.loadplaylist(0)
 
     # song > volume > playlist > song ...
     def menu(self):
@@ -61,16 +52,18 @@ class Player:
             self.volumeincrease()
 
     def playlistnext(self):
-        self.currentPlaylist += 1
+        self.current_playlist += 1
 
     def playlistprevious(self):
-        self.currentPlaylist -= 1
+        self.current_playlist -= 1
 
     def songnext(self):
         runmpccommand("next")
+        self.current_song = Song(status())
 
     def songprevious(self):
         runmpccommand("prev")
+        self.current_song = Song(status())
 
     def playpause(self):
         if self.songMode == "play":
@@ -81,6 +74,7 @@ class Player:
     def play(self):
         self.songMode = "play"
         runmpccommand("play")
+        self.current_song = Song(status())
 
     def pause(self):
         self.songMode = "pause"
@@ -88,32 +82,36 @@ class Player:
 
     def volumeincrease(self):
         runmpccommand("volume +10")
+        self.current_song.parse_from_status(status())
 
     def volumedecrease(self):
         runmpccommand("volume -10")
+        self.current_song.parse_from_status(status())
 
     def loadplaylist(self, index):
-        playlist_name = self.playlist(index)
+        runmpccommand("clear")
+        playlist_name = self.playlistname(index)
         runmpccommand("load", playlist_name)
+        runmpccommand("play", "1")
 
-    def playlist(self, index):
+    def playlistname(self, index):
         p1 = subprocess.Popen(["mpc", "lsplaylists"], stdout=subprocess.PIPE)
         p2 = subprocess.Popen(["sed", "-n", str(index + 1) + "p"],
-                          stdin = p1.stdout,
-                          stdout = subprocess.PIPE)
+                              stdin=p1.stdout,
+                              stdout=subprocess.PIPE)
         p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
         output, err = p2.communicate()
         return output
 
     def currentplaylist(self):
-        return self.playlist(self.currentPlaylist)
+        return self.playlistname(self.current_playlist)
 
 
 def status():
-    runmpccommand("status")
+    return runmpccommand("status")
 
 
-def runmpccommand(command, args = None):
+def runmpccommand(command, args=None):
     if args is None:
         args = []
-    subprocess.call(["mpc " + command, args], shell=True)
+    return subprocess.check_output(["mpc " + command, args], shell=True)

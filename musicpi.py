@@ -3,11 +3,13 @@
 
 import RPi.GPIO as GPIO
 import buttons
-import commands
-import display
+from Player import *
 
 buttons.setup_buttons()
 
+player = Player()
+
+# PAREI
 try:
     while True:
         print "a"
