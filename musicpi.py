@@ -4,12 +4,12 @@
 import RPi.GPIO as GPIO
 import buttons
 from Player import *
+from Display import *
 
-
-player = Player()
+display = Display()
+player = Player(display)
 buttons.setup_buttons(player)
 
-# PAREI
 try:
     player.start()
 

@@ -2,12 +2,12 @@
 # coding=utf-8
 
 import subprocess
-import display
 from Song import *
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, display):
+        self.display = display
         self.menuMode = "playlist"  # playlist | song | volume
         self.songMode = "pause"  # play | pause
         self.current_playlist = 0
@@ -22,13 +22,13 @@ class Player:
         # PAREI
         if self.menuMode == "playlist":
             self.menuMode = "song"
-            display.print_on_display(self.current_song.name, self.current_song.progress)
+            self.display.print_(self.current_song.name, self.current_song.progress)
         if self.menuMode == "song":
             self.menuMode = "volume"
-            display.print_on_display("VOLUME", self.current_song.volume)
+            self.display.print_("VOLUME", self.current_song.volume)
         if self.menuMode == "volume":
             self.menuMode = "playlist"
-            display.print_on_display("PLAYLIST", self.current_playlist)
+            self.display.print_("PLAYLIST", self.current_playlist)
 
     def confirm(self):
         if self.menuMode == "playlist":
