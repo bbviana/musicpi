@@ -8,7 +8,7 @@ from Song import *
 
 class Player:
     def __init__(self):
-        self.menuMode = "song"  # song | playlist | volume
+        self.menuMode = "playlist"  # playlist | song | volume
         self.songMode = "pause"  # play | pause
         self.current_playlist = 0
         self.current_song = Song()
@@ -19,14 +19,16 @@ class Player:
 
     # song > volume > playlist > song ...
     def menu(self):
+        # PAREI
+        if self.menuMode == "playlist":
+            self.menuMode = "song"
+            display.print_on_display(self.current_song.name, self.current_song.progress)
         if self.menuMode == "song":
             self.menuMode = "volume"
-        elif self.menuMode == "volume":
+            display.print_on_display("VOLUME", self.current_song.volume)
+        if self.menuMode == "volume":
             self.menuMode = "playlist"
-        elif self.menuMode == "playlist":
-            self.menuMode = "song"
-
-        display.print_on_display('Menu', self.menuMode)
+            display.print_on_display("PLAYLIST", self.current_playlist)
 
     def confirm(self):
         if self.menuMode == "playlist":
@@ -92,7 +94,6 @@ class Player:
         runmpccommand("clear")
         playlist_name = self.playlistname(index)
         runmpccommand("load", playlist_name)
-        runmpccommand("play", "1")
 
     def playlistname(self, index):
         p1 = subprocess.Popen(["mpc", "lsplaylists"], stdout=subprocess.PIPE)

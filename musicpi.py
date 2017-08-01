@@ -5,12 +5,14 @@ import RPi.GPIO as GPIO
 import buttons
 from Player import *
 
-buttons.setup_buttons()
 
 player = Player()
+buttons.setup_buttons(player)
 
 # PAREI
 try:
+    player.start()
+
     while True:
         print "a"
 except KeyboardInterrupt:
