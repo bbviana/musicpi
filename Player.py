@@ -11,26 +11,38 @@ class Player:
     def __init__(self, display):
         self.display = display
         self.menuMode = "playlist"  # playlist | song | volume
-        self.songMode = "pause"  # play | pause
-        self.current_playlist = 0
         self.current_song = Song()
+        self.current_playlist_index = 0
+        self.current_playlist_name = None
+        self.volume = 0
+
+    def loop(self):
+        self.print_info()
+
+    def print_info(self):
+        if self.menuMode == "playlist":
+            self.display.print_("PLAYLIST", self.current_playlist_name)
+            return
+        if self.menuMode == "song":
+            self.display.print_on_line1(self.current_song.name)
+            self.display.print_song_status(self.current_song)
+            return
+        if self.menuMode == "volume":
+            self.display.print_("VOLUME", str(self.volume) + "%")
+            return
 
     def start(self):
         # guardar ultima em um arquivo
         self.loadplaylist(0)
 
-    # song > volume > playlist > song ...
+    # playlist > song > volume > playlist
     def menu(self):
-        # PAREI
         if self.menuMode == "playlist":
             self.menuMode = "song"
-            self.display.print_(self.current_song.name, self.current_song.progress)
         if self.menuMode == "song":
             self.menuMode = "volume"
-            self.display.print_("VOLUME", self.current_song.volume)
         if self.menuMode == "volume":
             self.menuMode = "playlist"
-            self.display.print_("PLAYLIST", self.current_playlist)
 
     def confirm(self):
         if self.menuMode == "playlist":

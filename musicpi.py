@@ -14,7 +14,7 @@ try:
     player.start()
 
     while True:
-        print "a"
+        player.loop()
 except KeyboardInterrupt:
     GPIO.cleanup()
 

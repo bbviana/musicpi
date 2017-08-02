@@ -17,6 +17,10 @@ class Display:
         self.lcdi2c.lcd_display_string(line1, 1, 0)
         self.lcdi2c.lcd_display_string(line2, 2, 0)
 
+    def print_on_line1(self, line1):
+        self.lcdi2c.lcd_clear()
+        self.lcdi2c.lcd_display_string(line1, 1, 0)
+
     def print_song_status(self, song):
         self.lcdi2c.lcd_load_custom_chars(self.status_chars(song.playing) + self.progress_chars(song.progress))
         self.lcdi2c.lcd_write(MOVE_TO_LINE2)
