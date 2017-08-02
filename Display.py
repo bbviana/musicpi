@@ -2,9 +2,10 @@
 # coding=utf-8
 
 import I2C_LCD_driver
+import chars
 
-LCD_CMD_WRITE_LINE1 = 0x80
-LCD_CMD_WRITE_LINE2 = 0xC0
+MOVE_TO_LINE1 = 0x80
+MOVE_TO_LINE2 = 0xC0
 
 
 class Display:
@@ -15,158 +16,51 @@ class Display:
         self.lcdi2c.lcd_clear()
         self.lcdi2c.lcd_display_string(line1, 1, 0)
         self.lcdi2c.lcd_display_string(line2, 2, 0)
-    # PAREI
-    def print_song_status(self):
-        self.lcdi2c.lcd_load_custom_chars(play_pause_chars)
-        self.lcdi2c.lcd_write(LCD_CMD_WRITE_LINE2)
+
+    def print_song_status(self, song):
+        self.lcdi2c.lcd_load_custom_chars(self.status_chars(song.playing) + self.progress_chars(song.progress))
+        self.lcdi2c.lcd_write(MOVE_TO_LINE2)
+        # pos 0
         self.lcdi2c.lcd_write_char(0)
 
+        # pos 1: espaço
 
-play_pause_chars = [
-    # [0] PLAY
-    [
-        0b11000,
-        0b01100,
-        0b00110,
-        0b00011,
-        0b00011,
-        0b00110,
-        0b01100,
-        0b11000
-    ],
+        self.lcdi2c.lcd_write(MOVE_TO_LINE2 + 2)
 
-    # [1] PAUSE
-    [
-        0b11011,
-        0b11011,
-        0b11011,
-        0b11011,
-        0b11011,
-        0b11011,
-        0b11011,
-        0b11011
-    ]
-]
+        # pos 2
+        self.lcdi2c.lcd_write_char(1)
+        # pos 3
+        self.lcdi2c.lcd_write_char(2)
 
-progress_chars = [
-    # [0] [
-    [
-        0b11111,
-        0b10000,
-        0b10000,
-        0b10000,
-        0b10000,
-        0b10000,
-        0b10000,
-        0b11111
-    ],
+    def status_chars(self, playing):
+        return chars.play if playing else chars.pause
 
-    # [1] [|___
-    [
-        0b11111,
-        0b11000,
-        0b11000,
-        0b11000,
-        0b11000,
-        0b11000,
-        0b11000,
-        0b11111
-    ],
+    def progress_chars(self, progress):
+        if progress <= 11:
+            # [____ ____]
+            return [chars.progressLeft0, chars.progressRight0]
+        if progress <= 22:
+            # [|___ ____]
+            return [chars.progressLeft1, chars.progressRight0]
+        if progress <= 33:
+            # [||__ ____]
+            return [chars.progressLeft2, chars.progressRight0]
+        if progress <= 44:
+            # [|||_ ____]
+            return [chars.progressLeft3, chars.progressRight0]
+        if progress <= 55:
+            # [|||| ____]
+            return [chars.progressLeftFull, chars.progressRight0]
+        if progress <= 66:
+            # [|||| |___]
+            return [chars.progressLeftFull, chars.progressRight1]
+        if progress <= 77:
+            # [|||| ||__]
+            return [chars.progressLeftFull, chars.progressRight2]
+        if progress <= 88:
+            # [|||| |||_]
+            return [chars.progressLeftFull, chars.progressRight3]
 
-    # [2] [||__
-    [
-        0b11111,
-        0b11100,
-        0b11100,
-        0b11100,
-        0b11100,
-        0b11100,
-        0b11100,
-        0b11111
-    ],
-
-    # [3] [|||_
-    [
-        0b11111,
-        0b11110,
-        0b11110,
-        0b11110,
-        0b11110,
-        0b11110,
-        0b11110,
-        0b11111
-    ],
-
-    # [4] [||||
-    [
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111
-    ],
-
-    # [5] ____]
-    [
-        0b11111,
-        0b00001,
-        0b00001,
-        0b00001,
-        0b00001,
-        0b00001,
-        0b00001,
-        0b11111
-    ],
-
-    # [6] |___]
-    [
-        0b11111,
-        0b10001,
-        0b10001,
-        0b10001,
-        0b10001,
-        0b10001,
-        0b10001,
-        0b11111
-    ],
-
-    # [7] ||__]
-    [
-        0b11111,
-        0b11001,
-        0b11001,
-        0b11001,
-        0b11001,
-        0b11001,
-        0b11001,
-        0b11111
-    ],
-
-    # [8] |||_]
-    [
-        0b11111,
-        0b11101,
-        0b11101,
-        0b11101,
-        0b11101,
-        0b11101,
-        0b11101,
-        0b11111
-    ],
-
-    # [9] ||||]
-    [
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111,
-        0b11111
-    ]
-
-]
+        # 89 - 100
+        # [|||| ||||]
+        return [chars.progressLeftFull, chars.progressRightFull]

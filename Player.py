@@ -4,6 +4,8 @@
 import subprocess
 from Song import *
 
+# PAREI
+# Song a partir de Status
 
 class Player:
     def __init__(self, display):
